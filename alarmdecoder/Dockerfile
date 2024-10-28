@@ -127,7 +127,7 @@ RUN sudo chown -R pi:pi alarmdecoder-webapp
 WORKDIR /opt/alarmdecoder-webapp
 RUN git config --global --add safe.directory '*'
 RUN git fetch origin
-RUN git checkout dev
+#RUN git checkout dev
 RUN git checkout master
 RUN sudo pip install -r requirements.txt
 WORKDIR /opt/alarmdecoder-webapp/contrib/opencv
