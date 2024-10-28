@@ -1,5 +1,5 @@
 # Pull base image
-FROM resin/rpi-raspbian:jessie
+FROM navikey/raspbian-buster:latest
 MAINTAINER AlarmDecoder <ad2usb@support.nutech.com>
 
 RUN sudo mkdir -p /etc/ser2sock
@@ -65,7 +65,7 @@ RUN sudo echo -e '<?xml version="1.0" standalone="no"?>\n\
 WORKDIR /opt
 
 RUN echo 'LANG=C.UTF-8' | sudo tee /etc/default/locale
-RUN sudo ln -s /etc/locale/alias /usr/share/locale/locale.alias
+#RUN sudo ln -s /etc/locale/alias /usr/share/locale/locale.alias
 #RUN sudo dpkg-reconfigure locales
 
 #make sure pip and setuptools are the latest available
@@ -74,7 +74,7 @@ RUN sudo pip install --upgrade pip
 
 #install ser2sock and alarmdecoder python library
 RUN sudo git clone http://github.com/nutechsoftware/ser2sock.git
-RUN sudo git clone http://github.com/nutechsoftware/alarmdecoder.git
+RUN sudo git clone http://github.com/ratsputin/alarmdecoder.git
 RUN sudo /usr/sbin/useradd pi
 RUN echo 'pi:raspberry' | chpasswd
 RUN sudo chown -R pi:pi /opt/ser2sock /opt/alarmdecoder
@@ -122,7 +122,7 @@ RUN sudo pip install httplib2
 
 #install webapp
 WORKDIR /opt
-RUN sudo git clone http://github.com/nutechsoftware/alarmdecoder-webapp.git
+RUN sudo git clone http://github.com/ratsputin/alarmdecoder-webapp.git
 RUN sudo chown -R pi:pi alarmdecoder-webapp
 WORKDIR /opt/alarmdecoder-webapp
 RUN git fetch origin
