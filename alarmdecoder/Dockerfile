@@ -93,10 +93,6 @@ WORKDIR /home/pi
 #cleanup nginx droppings
 RUN sudo rm -r nginx-$VERSION
 
-#upgrade gunicorn, hold packages from apt
-#RUN sudo pip install gunicorn --upgrade
-#RUN sudo ln -sf /usr/local/bin/gunicorn /usr/bin/gunicorn
-
 #hold packages so apt does not overwrite
 RUN sudo echo "nginx hold" | sudo dpkg --set-selections
 RUN sudo echo "gunicorn hold" | sudo dpkg --set-selections
@@ -124,6 +120,7 @@ RUN python manage.py initdb
 RUN sudo cp contrib/nginx/alarmdecoder /etc/nginx/sites-available/
 RUN sudo ln -s /etc/nginx/sites-available/alarmdecoder /etc/nginx/sites-enabled/
 RUN sudo mkdir /etc/gunicorn.d/
+RUN sudo mkdir /run/gunicorn/
 RUN sudo cp contrib/gunicorn.d/alarmdecoder /etc/gunicorn.d/
 RUN sudo chown -R pi:pi /etc/ser2sock
 RUN sudo usermod -a -G dialout pi
