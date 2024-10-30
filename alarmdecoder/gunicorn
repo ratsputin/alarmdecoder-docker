@@ -17,6 +17,7 @@ APPNAME=gunicorn
 USER=pi
 GROUP=dialout
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
+WORKDIR=/opt/alarmdecoder-webapp
 APPMODULE=wsgi:application
 DAEMON=/usr/bin/gunicorn
 BIND=127.0.0.1:8000
@@ -37,7 +38,7 @@ fi
 case "$1" in
   start)
         log_daemon_msg "Starting deferred execution scheduler" "$APPNAME"
-        $DAEMON --worker-class=socketio.sgunicorn.GeventSocketIOWorker --timeout=120 --env=POLICY_SERVER=0 --log-level=$LOGLEVEL --log-file=$LOGFILE --pid=$PIDFILE --user=$USER --group=$GROUP $APPMODULE
+        $DAEMON --worker-class=socketio.sgunicorn.GeventSocketIOWorker --timeout=120 --env=POLICY_SERVER=0 --chdir=$WORKDIR --log-level=$LOGLEVEL --log-file=$LOGFILE --pid=$PIDFILE --user=$USER --group=$GROUP $APPMODULE
         log_end_msg $?
     ;;
   stop)
