@@ -22,7 +22,6 @@ RUN sudo apt-get update && sudo apt-get install -y \
     avahi-daemon \
     libffi-dev \
     screen \
-    nginx \
     curl \
     build-essential \
     libpcre3-dev \
@@ -44,29 +43,10 @@ RUN sudo apt-get update && sudo apt-get install -y \
 #setup hostname
 RUN sudo su -c 'echo alarmdecoder > /etc/hostname'
 
-#setup avahi config
-RUN sudo echo -e '<?xml version="1.0" standalone="no"?>\n\
-<!DOCTYPE service-group SYSTEM "avahi-service.dtd">\n\
-<service-group>\n\
-\t<name replace-wildcards="yes">%h</name>\n\
-\t<service>\n\
-\t\t<type>_device-info._tcp</type>\n\
-\t\t<port>0</port>\n\
-\t\t<txt-record>model=AlarmDecoder</txt-record>\n\
-\t</service>\n\
-\t<service>\n\
-\t\t<type>_ssh._tcp</type>\n\
-\t\t<port>22</port>\n\
-\t</service>\n\
-</service-group>'\
->> /etc/avahi/services/alarmdecoder.service
-
 # Define working directory
 WORKDIR /opt
 
 RUN echo 'LANG=C.UTF-8' | sudo tee /etc/default/locale
-#RUN sudo ln -s /etc/locale/alias /usr/share/locale/locale.alias
-#RUN sudo dpkg-reconfigure locales
 
 #make sure pip and setuptools are the latest available
 RUN sudo pip install --upgrade setuptools
@@ -111,8 +91,8 @@ WORKDIR /home/pi
 RUN sudo rm -r nginx-$VERSION
 
 #upgrade gunicorn, hold packages from apt
-RUN sudo pip install gunicorn --upgrade
-RUN sudo ln -sf /usr/local/bin/gunicorn /usr/bin/gunicorn
+#RUN sudo pip install gunicorn --upgrade
+#RUN sudo ln -sf /usr/local/bin/gunicorn /usr/bin/gunicorn
 
 #hold packages so apt does not overwrite
 RUN sudo echo "nginx hold" | sudo dpkg --set-selections
@@ -142,46 +122,44 @@ RUN sudo mkdir /etc/gunicorn.d/
 RUN sudo cp contrib/gunicorn.d/alarmdecoder /etc/gunicorn.d/
 RUN sudo chown -R pi:pi /etc/ser2sock
 RUN sudo usermod -a -G dialout pi
-#RUN sudo chgrp dialout /etc/hosts /etc/hostname 
-#RUN sudo chmod g+w /etc/hosts /etc/hostname 
 
 #gunicorn systemd file
-RUN sudo echo -e '[Unit]\n\
-Description=gunicorn daemon\n\
-After=network.target\n\
-\n\
-[Service]\n\
-PIDFile=/run/gunicorn/pid\n\
-User=pi\n\
-Group=dialout\n\
-WorkingDirectory=/opt/alarmdecoder-webapp\n\
-ExecStart=/usr/local/bin/gunicorn --worker-class=socketio.sgunicorn.GeventSocketIOWorker --timeout=120 --env=POLICY_SERVER=0 --log-level=debug wsgi:application\n\
-ExecReload=/bin/kill -s HUP $MAINPID\n\
-ExecStop=/bin/kill -s TERM $MAINPID\n\
-PrivateTmp=true\n\
-\n\
-[Install]\n\
-WantedBy=multi-user.target\n'\
->> /etc/systemd/user/gunicorn.service
+#RUN sudo echo -e '[Unit]\n\
+#Description=gunicorn daemon\n\
+#After=network.target\n\
+#\n\
+#[Service]\n\
+#PIDFile=/run/gunicorn/pid\n\
+#User=pi\n\
+#Group=dialout\n\
+#WorkingDirectory=/opt/alarmdecoder-webapp\n\
+#ExecStart=/usr/local/bin/gunicorn --worker-class=socketio.sgunicorn.GeventSocketIOWorker --timeout=120 --env=POLICY_SERVER=0 --log-level=debug wsgi:application\n\
+#ExecReload=/bin/kill -s HUP $MAINPID\n\
+#ExecStop=/bin/kill -s TERM $MAINPID\n\
+#PrivateTmp=true\n\
+#\n\
+#[Install]\n\
+#WantedBy=multi-user.target\n'\
+#>> /etc/systemd/user/gunicorn.service
 
 
 #nginx systemd file
-RUN sudo echo -e '[Unit]\n\
-Description=The NGINX HTTP and reverse proxy server\n\
-After=syslog.target network.target remote-fs.target nss-lookup.target\n\
-\n\
-[Service]\n\
-Type=forking\n\
-PIDFile=/run/nginx.pid\n\
-ExecStartPre=/usr/sbin/nginx -t\n\
-ExecStart=/usr/sbin/nginx\n\
-ExecReload=/bin/kill -s HUP $MAINPID\n\
-ExecStop=/bin/kill -s QUIT $MAINPID\n\
-PrivateTmp=true\n\
-\n\
-[Install]\n\
-WantedBy=multi-user.target\n'\
->> /etc/systemd/user/nginx.service
+#RUN sudo echo -e '[Unit]\n\
+#Description=The NGINX HTTP and reverse proxy server\n\
+#After=syslog.target network.target remote-fs.target nss-lookup.target\n\
+#\n\
+#[Service]\n\
+#Type=forking\n\
+#PIDFile=/run/nginx.pid\n\
+#ExecStartPre=/usr/sbin/nginx -t\n\
+#ExecStart=/usr/sbin/nginx\n\
+#ExecReload=/bin/kill -s HUP $MAINPID\n\
+#ExecStop=/bin/kill -s QUIT $MAINPID\n\
+#PrivateTmp=true\n\
+#\n\
+#[Install]\n\
+#WantedBy=multi-user.target\n'\
+#>> /etc/systemd/user/nginx.service
 
 
 #nginx logrotate
