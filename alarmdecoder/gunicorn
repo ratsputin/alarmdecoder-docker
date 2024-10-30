@@ -18,11 +18,11 @@ USER=pi
 GROUP=dialout
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 APPMODULE=wsgi:application
-DAEMON=/usr/local/bin/gunicorn
+DAEMON=/usr/bin/gunicorn
 BIND=127.0.0.1:8000
 PIDFILE=/run/gunicorn/pid
 LOGLEVEL=debug
-LOGFILE=/var/log/$DAEMON/$DAEMON.log
+LOGFILE=/var/log/$APPNAME/$APPNAME.log
 
 
 . /lib/lsb/init-functions
