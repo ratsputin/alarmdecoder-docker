@@ -220,6 +220,10 @@ RUN sudo chmod +x /etc/init.d/gunicorn
 COPY start_services.sh /usr/local/bin/start_services.sh
 RUN sudo chmod +x /usr/local/bin/start_services.sh
 
+COPY nginx.conf /etc/nginx
+COPY nginx /etc/init.d/nginx
+RUN sudo chmod +x /etc/init.d/nginx
+
 #Chage start args in ser2sock to run as pi user
 RUN sudo sed -i 's/EXTRA_START_ARGS=/#EXTRA_START_ARGS=/g' /etc/init.d/ser2sock
 RUN sudo sed -i 's/##EXTRA_START_ARGS=/EXTRA_START_ARGS=/g' /etc/init.d/ser2sock
