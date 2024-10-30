@@ -94,7 +94,7 @@ RUN sudo python setup.py install
 RUN sudo service nginx stop
 RUN sudo apt-get -y remove nginx nginx-full
 RUN sudo apt-get clean
-ENV VERSION 1.19.9
+ENV VERSION 1.14.2
 WORKDIR /home/pi
 RUN curl http://nginx.org/download/nginx-$VERSION.tar.gz | tar zxvf -
 WORKDIR /home/pi/nginx-$VERSION
