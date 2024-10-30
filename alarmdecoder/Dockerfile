@@ -123,7 +123,6 @@ WORKDIR /opt/alarmdecoder-webapp
 RUN python manage.py initdb
 RUN sudo cp contrib/nginx/alarmdecoder /etc/nginx/sites-available/
 RUN sudo ln -s /etc/nginx/sites-available/alarmdecoder /etc/nginx/sites-enabled/
-RUN sudo rm /etc/nginx/sites-enabled/default
 RUN sudo mkdir /etc/gunicorn.d/
 RUN sudo cp contrib/gunicorn.d/alarmdecoder /etc/gunicorn.d/
 RUN sudo chown -R pi:pi /etc/ser2sock
