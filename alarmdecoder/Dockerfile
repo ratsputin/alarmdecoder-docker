@@ -213,6 +213,8 @@ RUN sudo chmod +x /home/pi/gen_certs.sh
 
 RUN sudo apt-get install -y logrotate
 
+COPY gunicorn /etc/init.d/gunicorn
+RUN sudo chmod +x /etc/init.d/gunicorn
 COPY start_services.sh /usr/local/bin/start_services.sh
 RUN sudo chmod +x /usr/local/bin/start_services.sh
 
