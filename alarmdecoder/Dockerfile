@@ -86,6 +86,8 @@ RUN sudo make install
 RUN sudo mkdir -p /var/www
 RUN sudo cp html/* /var/www
 RUN sudo mkdir -p /etc/nginx/ssl
+RUN sudo mkdir -p /etc/nginx/sites-available/
+RUN sudo mkdir -p /etc/nginx/sites-enabled/
 
 WORKDIR /home/pi
 #cleanup nginx droppings
@@ -105,15 +107,18 @@ RUN sudo pip install httplib2
 WORKDIR /opt
 RUN sudo git clone http://github.com/ratsputin/alarmdecoder-webapp.git
 RUN sudo chown -R pi:pi alarmdecoder-webapp
+
 WORKDIR /opt/alarmdecoder-webapp
 RUN git config --global --add safe.directory '*'
 RUN git fetch origin
 #RUN git checkout dev
 RUN git checkout master
 RUN sudo pip install -r requirements.txt
+
 WORKDIR /opt/alarmdecoder-webapp/contrib/opencv
 RUN sudo ./opencv.sh
 RUN sudo rm -r OpenCV
+
 WORKDIR /opt/alarmdecoder-webapp
 RUN python manage.py initdb
 RUN sudo cp contrib/nginx/alarmdecoder /etc/nginx/sites-available/
