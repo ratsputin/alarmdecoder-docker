@@ -1,6 +1,7 @@
+# AlarmDecoder <ad2usb@support.nutech.com>
+
 # Pull base image
 FROM navikey/raspbian-buster:latest
-MAINTAINER AlarmDecoder <ad2usb@support.nutech.com>
 
 RUN sudo mkdir -p /etc/ser2sock
 
