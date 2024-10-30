@@ -72,8 +72,8 @@ WORKDIR /opt/alarmdecoder
 RUN sudo python setup.py install
 
 #install nginx by source
-RUN sudo service nginx stop
-RUN sudo apt-get -y remove nginx nginx-full
+#RUN sudo service nginx stop
+#RUN sudo apt-get -y remove nginx nginx-full
 RUN sudo apt-get clean
 ENV VERSION 1.14.2
 WORKDIR /home/pi
