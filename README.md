@@ -92,4 +92,14 @@ This is an official Dockerfile for setting up the AlarmDecoder Webapp on your ow
 
 <p>PID=$(sudo docker inspect --format {{.State.Pid}} alarmdecoder_container_id)</p>
 
+## To Do
+
+<p>Clean up README</p>
+
+<p>Clean up Dockerfile to properly handle layers</p>
+
+<p>Figure out where config is stored and set up static storage for it</p>
+
+<p>Look at moving to Bookworm</p>
+
 <p>sudo nsenter --target $PID --mount --uts --ipc --net --pid</p>
