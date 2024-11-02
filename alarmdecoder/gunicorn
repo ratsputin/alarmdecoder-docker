@@ -38,11 +38,11 @@ fi
 case "$1" in
   start)
         log_daemon_msg "Starting deferred execution scheduler" "$APPNAME"
-        $DAEMON --worker-class=socketio.sgunicorn.GeventSocketIOWorker --timeout=120 --env=POLICY_SERVER=0 --chdir=$WORKDIR --log-level=$LOGLEVEL --log-file=$LOGFILE --pid=$PIDFILE --user=$USER --group=$GROUP $APPMODULE
+        $DAEMON --worker-class=socketio.sgunicorn.GeventSocketIOWorker --daemon --timeout=120 --env=POLICY_SERVER=0 --chdir=$WORKDIR --log-level=$LOGLEVEL --log-file=$LOGFILE --pid=$PIDFILE --user=$USER --group=$GROUP $APPMODULE
         log_end_msg $?
     ;;
   stop)
-        log_daemon_msg "Stopping deferred execution scheduler" "APPNAME"
+        log_daemon_msg "Stopping deferred execution scheduler" "$APPNAME"
         killproc -p $PIDFILE $DAEMON
         log_end_msg $?
     ;;
