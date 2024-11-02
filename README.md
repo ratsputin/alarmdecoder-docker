@@ -96,6 +96,8 @@ This is an official Dockerfile for setting up the AlarmDecoder Webapp on your ow
 
 <p>Clean up README</p>
 
+<p>Fix install.sh to work with Bookworm</p>
+
 <p>Clean up Dockerfile to properly handle layers</p>
 
 <p>Figure out where config is stored and set up static storage for it</p>
