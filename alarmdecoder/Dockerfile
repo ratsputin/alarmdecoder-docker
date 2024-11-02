@@ -195,7 +195,7 @@ RUN sudo echo -e '/var/log/gunicorn/*.log {\n\
 
 #fix ser2sock config
 RUN sudo sed -i 's/raw_device_mode = 0/raw_device_mode = 1/g' /etc/ser2sock/ser2sock.conf
-RUN sudo sed -i 's/ttyAMA0/ttyS0/g' etc/ser2sock/ser2sock.conf
+RUN sudo sed -i 's/ttyAMA0/ttyS0/g' /etc/ser2sock/ser2sock.conf
 
 #fix permissions on webapp directory
 RUN sudo chown -R pi:pi /opt/alarmdecoder-webapp
