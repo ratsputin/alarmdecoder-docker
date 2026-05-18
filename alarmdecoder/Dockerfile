@@ -7,39 +7,51 @@ RUN sudo mkdir -p /etc/ser2sock
 
 RUN echo "pi\tALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
 
+# ==================== CLEAN UNIFIED OVERWRITE FOR BUSTER ====================
+RUN sudo rm -rf /etc/apt/sources.list /etc/apt/sources.list.d/*
+RUN echo "deb http://legacy.raspbian.org/raspbian/ buster main contrib non-free rpi firmware" | sudo tee /etc/apt/sources.list
+# =============================================================================
+
 #disable service
 RUN sudo systemctl disable serial-getty@ttyAMA0.service
 
-# Install dependencies
-RUN sudo apt-get update && sudo apt-get install -y \
-    supervisor \
-    wget \
-    unzip \
-    minicom \
-    telnet \
-    libssl-dev \
-    autoconf \
-    automake \
-    avahi-daemon \
-    libffi-dev \
-    screen \
-    curl \
-    build-essential \
-    libpcre3-dev \
-    libpcre++-dev \
-    zlib1g-dev \
-    libcurl4-openssl-dev \
-    gunicorn \
-    sendmail \
-    sqlite3 \
-    git \
-    miniupnpc \
-    python2.7 \
-    python2.7-dev \
-    python-pip \
-    python-virtualenv \
-    --no-install-recommends && \
+# Update, force match the non-standard base image libc packages to the standard mirror channel versions
+RUN sudo apt-get update && \
+    sudo apt-get -y dist-upgrade && \
+    sudo apt-get install -y --allow-downgrades \
+        libc6=2.28-10+rpi1+deb10u4 \
+        libc-bin=2.28-10+rpt2+rpi1 \
+        libc6-dev \
+        supervisor \
+        wget \
+        unzip \
+        minicom \
+        telnet \
+        libssl-dev \
+        autoconf \
+        automake \
+        avahi-daemon \
+        libffi-dev \
+        screen \
+        curl \
+        build-essential \
+        libpcre3-dev \
+        libpcre++-dev \
+        zlib1g-dev \
+        libcurl4-openssl-dev \
+        gunicorn \
+        sendmail \
+        sqlite3 \
+        git \
+        miniupnpc \
+        python2.7 \
+        python2.7-dev \
+        --no-install-recommends && \
     sudo rm -rf /var/lib/apt/lists/*
+
+# Manually build pipeline-wide PIP tool right under the step
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python2.7
+RUN sudo pip install --upgrade "virtualenv<21.0.0"
 
 #setup hostname
 RUN sudo su -c 'echo alarmdecoder > /etc/hostname'
@@ -69,13 +81,14 @@ RUN sudo cp init/ser2sock /etc/init.d/
 RUN sudo update-rc.d ser2sock defaults
 
 WORKDIR /opt/alarmdecoder
+RUN sudo git config --global --add safe.directory '*'
 RUN sudo python setup.py install
 
 #install nginx by source
 #RUN sudo service nginx stop
 #RUN sudo apt-get -y remove nginx nginx-full
 RUN sudo apt-get clean
-ENV VERSION 1.14.2
+ENV VERSION=1.14.2
 WORKDIR /home/pi
 RUN curl http://nginx.org/download/nginx-$VERSION.tar.gz | tar zxvf -
 WORKDIR /home/pi/nginx-$VERSION
